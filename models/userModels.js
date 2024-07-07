@@ -18,6 +18,13 @@ const userSchema = mongoose.Schema(
             type: String,
             required: [true, "Please add password"],
         },
+        categories: {
+            type: Array,
+            required: [true, "Please add categories"],
+        },
+        profilePic: {
+            type: String,
+        },
     },
     { timestamps: true }
 );

@@ -60,24 +60,47 @@ exports.userSignup = asyncHandler(async (req, res) => {
 });
 
 exports.userLogin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
   try {
-    const { email, password } = req.body;
-    // Firebase login logic should be here
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const user = userCredential.user;
-    res.status(200).send({
-      message: `User ${user.email} logged in`,
-      user: user,
+    // Authenticate the user using Firebase Admin SDK
+    const userCredential = await admin.auth().getUserByEmail(email);
+    const uid = userCredential.uid; 
+
+    const token = await admin.auth().createCustomToken(uid);
+    console.log("Custom token:", token);
+    // Retrieve user data from MongoDB
+    const user = await User.findOne({ userId: uid });
+    console.log("User data from MongoDB:", user);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found in MongoDB"
+      });
+    }
+
+    // Return the user data with a successful login message
+    res.status(200).json({
+      message: `User ${user.email} logged in successfully`,
+      user: {
+        uid: user.userId,
+        email: user.email,
+        fullName: user.fullName,
+        categories: user.categories || [],
+      },
+      token: token, // Optionally return a token for session management
       success: true,
     });
+
   } catch (error) {
-    res.status(500).send("Error logging in user");
+    console.error("Error logging in user:", error);
+    res.status(500).json({
+      message: "Error logging in user",
+      error: error.message,
+      success: false
+    });
   }
 });
+
 
 exports.getAllUsers = asyncHandler(async (req, res, next) => {
   try {
