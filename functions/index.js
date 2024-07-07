@@ -42,29 +42,29 @@ exports.sendWelcomeEmail = functions.auth.user().onCreate(async (user) => {
   const email = user.email; // Extract email from user object
   const displayName = user.displayName || "New User";
   const subject = `Welcome to the Conversation, ${displayName}`;
-  const message = `<p>Dear gentle reader,</p>
-    <p>Welcome to Chatter! We're thrilled to have you join our vibrant 
-    community of readers, writers, and thinkers.</p>
-    <p> Whether you're here to explore new ideas, share your own voice, 
-    or simply connect with like-minded individuals, Medium is your platform.
-    We can't wait to see what you contribute to the conversation!</p>
-    <p>Happy reading (and writing!),</p>
-    <p>Your friends at Chatter</p>
-    `;
+  const htmlMessage = `
+  <p>Dear gentle reader,</p>
+  <p>Welcome to Chatter! We're thrilled to have you join our vibrant 
+  community of readers, writers, and thinkers.</p>
+  <p>Whether you're here to explore new ideas, share your own voice, 
+  or simply connect with like-minded individuals, Medium is your platform. 
+  We can't wait to see what you contribute to the conversation!</p>
+  <p>Happy reading (and writing!),</p>
+  <p>Your friends at Chatter</p>
+`;
 
   const mailOptions = {
     from: `"${process.env.SENDER_NAME}" <${process.env.SENDER_EMAIL}>`,
     to: email,
-    subject: htmlToText.fromString(subject),
-    text: htmlToText.fromString(message, {
-      wordwrap: 130,
-    }),
-    html: message,
+    subject: htmlToText.fromString(subject, {wordwrap: 130}),
+    text: htmlToText.fromString(htmlMessage, {wordwrap: 130}),
+    html: htmlMessage,
   };
+
 
   try {
     await mailTransport.sendMail(mailOptions);
-    return console.log("Welcome email sent to:", email);
+    console.log("Welcome email sent to:", email);
   } catch (error) {
     console.error("Failed to send welcome email:", error);
   }

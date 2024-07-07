@@ -2,61 +2,56 @@ const asyncHandler = require("express-async-handler");
 const ErrorResponse = require("../utils/errorResponse.js");
 const User = require("../models/userModels.js");
 const TokenService = require("../services/tokenService");
-const { signInWithEmailAndPassword, getAuth } = require("firebase/auth");
+const { signInWithEmailAndPassword } = require("firebase/auth");
 const admin = require("firebase-admin");
 const { db } = require("../middleware/authenticate");
-const { sendWelcomeEmail } = require("../functions/index");
+const bcrypt = require('bcrypt');
 
 exports.userSignup = asyncHandler(async (req, res) => {
-  console.log("Request body:", req.body);
   const { email, password, fullName } = req.body;
+  console.log("Request body:", req.body);
 
   try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      console.log("User already exists");
+      return res.status(400).json({
+        success: false,
+        message: "A user with this email already exists"
+      });
+    }
+
     const userCredential = await admin.auth().createUser({
-      email, password, displayName: fullName,
+      email,
+      password,
+      displayName: fullName
     });
     console.log("New user ID:", userCredential.uid);
 
-    // Correctly setting document with Firebase Admin SDK
-    const result = await db.collection("users").doc(userCredential.uid).set({ fullName, email});
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
+
+    const newUser = new User({
+      fullName,
+      password: hash,
+      email,
+      userId: userCredential.uid,
+    });
+    await newUser.save();
+    console.log("User registered and saved to MongoDB and Setting document in Firebase Firestore");
+    const result = await db.collection("users").doc(userCredential.uid).set({
+      fullName, email, userId: userCredential.uid
+    });
     console.log("Result of setting document:", result);
 
-
-    try {
-      const existingUser = await User.findOne({ $or: [{ fullName }, { email }] });
-
-      if (existingUser) {
-        return res.status(400).json({
-          success: false,
-          message: "A user with this name or email already exists"
-        });
-      }
-
-      const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(password, salt);
-
-      let newUser = new User({
-        fullName,
-        password: hash,
-        email,
-      });
-  
-      await newUser.save();
-      res.status(201).send({
-        message: "User registered and saved to MongoDB",
-        user: newUser,
-        success: true,
-      });
-
-      sendWelcomeEmail(newUser).catch(console.error); 
-    } catch (error) {
-      console.error("Error saving user to MongoDB:", error);
-      res.status(500).send("Error registering user");
-    }
-
+    res.status(201).send({
+      message: "User registered successfully",
+      data: newUser,
+      success: true,
+    });
   } catch (error) {
-    console.error("Error registering user:", error);
-    res.status(500).send("Error registering user");
+    console.error("Error in user registration process:", error.message);
+    res.status(500).send(`Error registering user: ${error.message}`);
   }
 });
 
