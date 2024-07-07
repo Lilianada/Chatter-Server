@@ -65,25 +65,68 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
     }
 });
 
-//add selected categories to user document
 exports.addCategoryToUser = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const { category } = req.body;
+    const { categories } = req.body; // Assuming this could be an array of categories
+
+    console.log('User Id:', id, 'Categories:', categories);
+    // Check if 'categories' is provided and is an array
+    if (!categories || !Array.isArray(categories)) {
+        return res.status(400).json({ message: "Invalid categories provided, must be an array." });
+    }
+
     console.log('Request body:', req.body, 'Request params:', req.params);
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid user ID." });
+    }
+
     try {
         const user = await User.findById(id);
+        console.log(user)
         if (!user) {
             return res.status(404).json({ message: `User not found for id ${id}` });
         }
-        user.categories.push(category);
+        // Add categories to the user's categories array if not already included
+        categories.forEach(category => {
+            if (!user.categories.includes(category)) {
+                user.categories.push(category);
+            }
+        });
+
         await user.save();
         res.status(200).json({
             success: true,
-            message: `Category added to user id ${id}`,
+            message: `Categories added to user id ${id}`,
             data: user,
         });
     } catch (err) {
         console.error("Error in adding category to user:", err);
         next(new ErrorResponse("Error in adding category to user", 500));
+    }
+});
+
+exports.getUserCategories = asyncHandler(async (req, res, next) => {
+    const { userId } = req.params; // userID of the user from whom to fetch categories
+    console.log(userId)
+    // Validate the userID
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ message: "Invalid userID." });
+    }
+
+    try {
+        const user = await User.findById(userId).select('categories');
+        if (!user) {
+            return res.status(404).json({ message: `User not found for userID ${userId}` });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Categories retrieved successfully for userID ${userId}`,
+            categories: user.categories, // Return the categories array
+        });
+    } catch (err) {
+        console.error("Error in fetching user categories:", err);
+        next(new ErrorResponse("Error in fetching user categories", 500));
     }
 });

@@ -43,7 +43,11 @@ exports.userSignup = asyncHandler(async (req, res) => {
       fullName, email, userId: userCredential.uid
     });
     console.log("Result of setting document:", result);
-
+    await db.collection('mail').add({
+      to: email,
+      message: `Dear gentle reader, welcome to Chatter! We are excited to have you on board. Enjoy your stay!`,
+      subject: `Welcome to Chatter,  ${fullName}!`
+    });
     res.status(201).send({
       message: "User registered successfully",
       data: newUser,
