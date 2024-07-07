@@ -11,7 +11,8 @@ connectDb();
 
 const app = express();
 const user = require("./routes/userRoute.js");
-const articles = require("./routes/articlesRoute.js");
+const articles = require("./routes/articlesRoutes.js");
+const categories = require("./routes/categoryRoutes.js");
 const errorHandler = require("./middleware/error.js");
 
 // Apply CORS
@@ -36,6 +37,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 // Mount routers
 app.use("/api/user", user);
 app.use("/api/article", articles);
+app.use("/api/category", categories);
 
 // After all routes
 app.use((err, req, res, next) => {

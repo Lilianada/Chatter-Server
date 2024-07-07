@@ -2,8 +2,10 @@ const asyncHandler = require("express-async-handler");
 const ErrorResponse = require("../utils/errorResponse.js");
 const uploadImage = require("../helpers/uploadHelper.js");
 const Category = require("../models/categoryModels.js");
+const User = require("../models/userModels.js");
 
 exports.getAllCategories = asyncHandler(async (req, res, next) => {
+    console.log('Request body:', req.body);
     try {
         const categories = await Category.find();
         if (!categories) {
@@ -63,12 +65,13 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
     }
 });
 
-//add category to user db
+//add selected categories to user document
 exports.addCategoryToUser = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const { category } = req.body;
+    console.log('Request body:', req.body, 'Request params:', req.params);
     try {
-        const user = await Users.findById(id);
+        const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: `User not found for id ${id}` });
         }
