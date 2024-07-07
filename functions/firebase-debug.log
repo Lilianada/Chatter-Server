@@ -1,0 +1,145 @@
+[debug] [2024-06-24T22:24:27.764Z] ----------------------------------------------------------------------
+[debug] [2024-06-24T22:24:27.767Z] Command:       /Users/lilian/.nvm/versions/node/v20.11.0/bin/node /usr/local/bin/firebase deploy --only functions
+[debug] [2024-06-24T22:24:27.767Z] CLI Version:   13.0.1
+[debug] [2024-06-24T22:24:27.768Z] Platform:      darwin
+[debug] [2024-06-24T22:24:27.768Z] Node Version:  v20.11.0
+[debug] [2024-06-24T22:24:27.768Z] Time:          Mon Jun 24 2024 23:24:27 GMT+0100 (West Africa Standard Time)
+[debug] [2024-06-24T22:24:27.768Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-06-24T22:24:27.825Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-06-24T22:24:27.825Z] > authorizing via signed-in user (lilibest30.lb@gmail.com)
+[debug] [2024-06-24T22:24:27.825Z] [iam] checking project chatter-app-f65ae for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2024-06-24T22:24:27.826Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/chatter-app-f65ae:testIamPermissions [none]
+[debug] [2024-06-24T22:24:27.826Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/chatter-app-f65ae:testIamPermissions x-goog-quota-user=projects/chatter-app-f65ae
+[debug] [2024-06-24T22:24:27.827Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/chatter-app-f65ae:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2024-06-24T22:24:29.403Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/chatter-app-f65ae:testIamPermissions 200
+[debug] [2024-06-24T22:24:29.404Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/chatter-app-f65ae:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2024-06-24T22:24:29.404Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/chatter-app-f65ae/serviceAccounts/chatter-app-f65ae@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2024-06-24T22:24:29.404Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/chatter-app-f65ae/serviceAccounts/chatter-app-f65ae@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2024-06-24T22:24:30.629Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/chatter-app-f65ae/serviceAccounts/chatter-app-f65ae@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2024-06-24T22:24:30.629Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/chatter-app-f65ae/serviceAccounts/chatter-app-f65ae@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'chatter-app-f65ae'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] ✔  functions: Finished running predeploy script. 
+[debug] [2024-06-24T22:24:31.516Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/chatter-app-f65ae [none]
+[debug] [2024-06-24T22:24:32.397Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/chatter-app-f65ae 200
+[debug] [2024-06-24T22:24:32.397Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/chatter-app-f65ae {"projectId":"chatter-app-f65ae","projectNumber":"198866169869","displayName":"Chatter-app","name":"projects/chatter-app-f65ae","resources":{"hostingSite":"chatter-app-f65ae","realtimeDatabaseInstance":"chatter-app-f65ae-default-rtdb","storageBucket":"chatter-app-f65ae.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_786b9fe4-5f26-405e-affd-3249d4575fed"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2024-06-24T22:24:32.400Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudfunctions.googleapis.com [none]
+[debug] [2024-06-24T22:24:32.400Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/chatter-app-f65ae
+[debug] [2024-06-24T22:24:32.402Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/runtimeconfig.googleapis.com [none]
+[debug] [2024-06-24T22:24:32.402Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/chatter-app-f65ae
+[debug] [2024-06-24T22:24:32.404Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudbuild.googleapis.com [none]
+[debug] [2024-06-24T22:24:32.404Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudbuild.googleapis.com x-goog-quota-user=projects/chatter-app-f65ae
+[debug] [2024-06-24T22:24:32.406Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/artifactregistry.googleapis.com [none]
+[debug] [2024-06-24T22:24:32.406Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/artifactregistry.googleapis.com x-goog-quota-user=projects/chatter-app-f65ae
+[debug] [2024-06-24T22:24:34.804Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/runtimeconfig.googleapis.com 200
+[debug] [2024-06-24T22:24:34.804Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2024-06-24T22:24:34.805Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudbuild.googleapis.com 200
+[debug] [2024-06-24T22:24:34.806Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudbuild.googleapis.com [omitted]
+[warn] ⚠  functions: missing required API cloudbuild.googleapis.com. Enabling now... 
+[debug] [2024-06-24T22:24:34.806Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudbuild.googleapis.com:enable [none]
+[debug] [2024-06-24T22:24:34.806Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudbuild.googleapis.com:enable x-goog-quota-user=projects/chatter-app-f65ae
+[debug] [2024-06-24T22:24:34.808Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/artifactregistry.googleapis.com 200
+[debug] [2024-06-24T22:24:34.808Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/artifactregistry.googleapis.com [omitted]
+[warn] ⚠  artifactregistry: missing required API artifactregistry.googleapis.com. Enabling now... 
+[debug] [2024-06-24T22:24:34.809Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/artifactregistry.googleapis.com:enable [none]
+[debug] [2024-06-24T22:24:34.809Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/artifactregistry.googleapis.com:enable x-goog-quota-user=projects/chatter-app-f65ae
+[debug] [2024-06-24T22:24:34.810Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudfunctions.googleapis.com 200
+[debug] [2024-06-24T22:24:34.810Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudfunctions.googleapis.com [omitted]
+[info] ✔  functions: required API cloudfunctions.googleapis.com is enabled 
+[debug] [2024-06-24T22:24:36.396Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/artifactregistry.googleapis.com:enable 200
+[debug] [2024-06-24T22:24:36.397Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/artifactregistry.googleapis.com:enable [omitted]
+[debug] [2024-06-24T22:24:36.419Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudbuild.googleapis.com:enable 200
+[debug] [2024-06-24T22:24:36.419Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudbuild.googleapis.com:enable [omitted]
+[debug] [2024-06-24T22:24:46.399Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/artifactregistry.googleapis.com [none]
+[debug] [2024-06-24T22:24:46.400Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/artifactregistry.googleapis.com x-goog-quota-user=projects/chatter-app-f65ae
+[debug] [2024-06-24T22:24:46.420Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudbuild.googleapis.com [none]
+[debug] [2024-06-24T22:24:46.421Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudbuild.googleapis.com x-goog-quota-user=projects/chatter-app-f65ae
+[debug] [2024-06-24T22:24:47.954Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudbuild.googleapis.com 200
+[debug] [2024-06-24T22:24:47.954Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/cloudbuild.googleapis.com [omitted]
+[info] ✔  functions: required API cloudbuild.googleapis.com is enabled 
+[debug] [2024-06-24T22:24:47.963Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/artifactregistry.googleapis.com 200
+[debug] [2024-06-24T22:24:47.963Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/chatter-app-f65ae/services/artifactregistry.googleapis.com [omitted]
+[info] ✔  artifactregistry: required API artifactregistry.googleapis.com is enabled 
+[debug] [2024-06-24T22:24:47.965Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/chatter-app-f65ae/adminSdkConfig [none]
+[debug] [2024-06-24T22:24:49.136Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/chatter-app-f65ae/adminSdkConfig 200
+[debug] [2024-06-24T22:24:49.136Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/chatter-app-f65ae/adminSdkConfig {"projectId":"chatter-app-f65ae","databaseURL":"https://chatter-app-f65ae-default-rtdb.firebaseio.com","storageBucket":"chatter-app-f65ae.appspot.com","locationId":"us-central"}
+[debug] [2024-06-24T22:24:49.137Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/chatter-app-f65ae/configs [none]
+[debug] [2024-06-24T22:24:51.064Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/chatter-app-f65ae/configs 200
+[debug] [2024-06-24T22:24:51.064Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/chatter-app-f65ae/configs {}
+[debug] [2024-06-24T22:24:51.067Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2024-06-24T22:24:52.273Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^11.8.0",
+    "firebase-functions": "^4.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2024-06-24T22:24:52.274Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[debug] [2024-06-24T22:24:52.274Z] Could not find functions.yaml. Must use http discovery
+[debug] [2024-06-24T22:24:52.283Z] Found firebase-functions binary at '/Users/lilian/Desktop/Projects/ChatterApp/Server/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8933
+
+[debug] [2024-06-24T22:24:53.595Z] Got response from /__/functions.yaml {"endpoints":{"sendWelcomeEmail":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"eventTrigger":{"eventType":"providers/firebase.auth/eventTypes/user.create","eventFilters":{"resource":"projects/chatter-app-f65ae"},"retry":false},"labels":{},"entryPoint":"sendWelcomeEmail"}},"specVersion":"v1alpha1","requiredAPIs":[]}
+[info] i  functions: preparing functions directory for uploading... 
+[info] i  functions: packaged /Users/lilian/Desktop/Projects/ChatterApp/Server/functions (75.09 KB) for uploading 
+[debug] [2024-06-24T22:24:58.648Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/projects/chatter-app-f65ae/locations/-/functions [none]
+[debug] [2024-06-24T22:24:59.827Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/projects/chatter-app-f65ae/locations/-/functions 200
+[debug] [2024-06-24T22:24:59.827Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/projects/chatter-app-f65ae/locations/-/functions {}
+[debug] [2024-06-24T22:24:59.828Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/chatter-app-f65ae/locations/-/functions filter=environment%3D%22GEN_2%22
+[debug] [2024-06-24T22:25:00.891Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/chatter-app-f65ae/locations/-/functions 200
+[debug] [2024-06-24T22:25:00.891Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/chatter-app-f65ae/locations/-/functions {}
+[debug] [2024-06-24T22:25:00.896Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/chatter-app-f65ae [none]
+[debug] [2024-06-24T22:25:01.587Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/chatter-app-f65ae 200
+[debug] [2024-06-24T22:25:01.588Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/chatter-app-f65ae {"projectId":"chatter-app-f65ae","projectNumber":"198866169869","displayName":"Chatter-app","name":"projects/chatter-app-f65ae","resources":{"hostingSite":"chatter-app-f65ae","realtimeDatabaseInstance":"chatter-app-f65ae-default-rtdb","storageBucket":"chatter-app-f65ae.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_786b9fe4-5f26-405e-affd-3249d4575fed"}
+[debug] [2024-06-24T22:25:01.590Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v1/projects/chatter-app-f65ae/locations/us-central1/functions:generateUploadUrl [none]
+[debug] [2024-06-24T22:25:01.590Z] >>> [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/chatter-app-f65ae/locations/us-central1/functions:generateUploadUrl {}
+[debug] [2024-06-24T22:25:09.446Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v1/projects/chatter-app-f65ae/locations/us-central1/functions:generateUploadUrl 500
+[debug] [2024-06-24T22:25:09.447Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/chatter-app-f65ae/locations/us-central1/functions:generateUploadUrl {"error":{"code":500,"message":"Failed to generate source upload url for 1st Gen function projects/chatter-app-f65ae/locations/us-central1: The service has encountered an internal error. Please try again later","status":"INTERNAL"}}
+[info] 
+
+There was an issue deploying your functions. Verify that your project has a Google App Engine instance setup at https://console.cloud.google.com/appengine and try again. If this issue persists, please contact support.
+[warn] ⚠  functions: Upload Error: HTTP Error: 500, Failed to generate source upload url for 1st Gen function projects/chatter-app-f65ae/locations/us-central1: The service has encountered an internal error. Please try again later 
+[error] 
+[error] Error: HTTP Error: 500, Failed to generate source upload url for 1st Gen function projects/chatter-app-f65ae/locations/us-central1: The service has encountered an internal error. Please try again later
+[debug] [2024-06-24T22:25:09.832Z] Error Context: {
+  "body": {
+    "error": {
+      "code": 500,
+      "message": "Failed to generate source upload url for 1st Gen function projects/chatter-app-f65ae/locations/us-central1: The service has encountered an internal error. Please try again later",
+      "status": "INTERNAL"
+    }
+  },
+  "response": {
+    "statusCode": 500
+  }
+}
