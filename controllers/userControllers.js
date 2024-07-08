@@ -101,7 +101,6 @@ exports.userLogin = asyncHandler(async (req, res) => {
   }
 });
 
-
 exports.getAllUsers = asyncHandler(async (req, res, next) => {
   try {
     const users = await Users.find();
@@ -159,37 +158,32 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.profileUpdate = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { userId } = req.params;
+  console.log("Request body:", req.body, "User ID:", userId);
   const {
-    firstName,
-    lastName,
+    fullName,
     userName,
     email,
+    description,
     profilePic,
-    phoneNumber,
-    country,
-    lang,
-    password,
-    role,
+    pronouns,
+    categories
   } = req.body;
 
   try {
-    const user = await Users.findById(id);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: `User not found for id ${id}` });
     }
 
     // Update user fields if provided
-    user.firstName = firstName || user.firstName;
-    user.lastName = lastName || user.lastName;
+    user.fullName = fullName || user.fullName;
     user.userName = userName || user.userName;
     user.email = email || user.email;
     user.profilePic = profilePic || user.profilePic;
-    user.phoneNumber = phoneNumber || user.phoneNumber;
-    user.country = country || user.country;
-    user.lang = lang || user.lang;
-    user.password = password || user.password; // Consider hashing the password if it's new
-    user.role = role || user.role;
+    user.description = description || user.description;
+    user.pronouns = pronouns || user.pronouns;
+    user.categories = categories || user.categories;
 
     const updatedUser = await user.save();
     res.status(200).json({

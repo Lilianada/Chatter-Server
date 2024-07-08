@@ -10,6 +10,9 @@ const userSchema = mongoose.Schema(
             type: String,
             required: [true, "Please add name"],
         },
+        userName: {
+            type: String,
+        },
         email: {
             type: String,
             required: [true, "Please add email"],
@@ -17,6 +20,12 @@ const userSchema = mongoose.Schema(
         password: {
             type: String,
             required: [true, "Please add password"],
+        },
+        pronouns: {
+            type: String,
+        },
+        description: {
+            type: String,
         },
         categories: {
             type: Array,
