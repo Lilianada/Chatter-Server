@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const ErrorResponse = require("../utils/errorResponse.js");
 const User = require("../models/userModels.js");
 const TokenService = require("../services/tokenService");
-const { signInWithEmailAndPassword } = require("firebase/auth");
+const { signInWithEmailAndPassword, setPersistence, browserSessionPersistence } = require("firebase/auth");
 const admin = require("firebase-admin");
 const { db } = require("../middleware/authenticate");
 const bcrypt = require('bcrypt');
@@ -60,46 +60,43 @@ exports.userSignup = asyncHandler(async (req, res) => {
 });
 
 exports.userLogin = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    // Authenticate the user using Firebase Admin SDK
-    const userCredential = await admin.auth().getUserByEmail(email);
-    const uid = userCredential.uid; 
+  const { token } = req.body;
 
-    const token = await admin.auth().createCustomToken(uid);
-    console.log("Custom token:", token);
-    // Retrieve user data from MongoDB
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const uid = decodedToken.uid;
+    console.log("Verified UID:", uid);
+
+    // Verify password (assuming you store a hash in your MongoDB and use bcrypt to compare)
     const user = await User.findOne({ userId: uid });
-    console.log("User data from MongoDB:", user);
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found in MongoDB"
-      });
+      return res.status(404).json({ success: false, message: "User not found." });
     }
 
-    // Return the user data with a successful login message
+    // Create a custom token for session management
+    // const customToken = await admin.auth().createCustomToken(uid);
+
+    // Return the successful login response with the token
     res.status(200).json({
-      message: `User ${user.email} logged in successfully`,
+      success: true,
+      message: "Authentication successful.",
       user: {
-        uid: user.userId,
+        uid: uid,
         email: user.email,
         fullName: user.fullName,
-        categories: user.categories || [],
+        categories: user.categories,
+        profilePic: user.profilePic,
+        username: user.username
       },
-      token: token, // Optionally return a token for session management
-      success: true,
+      // token: customToken,
     });
 
   } catch (error) {
-    console.error("Error logging in user:", error);
-    res.status(500).json({
-      message: "Error logging in user",
-      error: error.message,
-      success: false
-    });
+    console.error("Login error:", error);
+    res.status(500).json({ success: false, message: "Login failed.", error: error.message });
   }
 });
+
 
 exports.getAllUsers = asyncHandler(async (req, res, next) => {
   try {
@@ -159,7 +156,6 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 
 exports.profileUpdate = asyncHandler(async (req, res, next) => {
   const { userId } = req.params;
-  console.log("Request body:", req.body, "User ID:", userId);
   const {
     fullName,
     userName,
@@ -171,7 +167,7 @@ exports.profileUpdate = asyncHandler(async (req, res, next) => {
   } = req.body;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findOneAndUpdate(userId);
     if (!user) {
       return res.status(404).json({ message: `User not found for id ${id}` });
     }
@@ -188,7 +184,7 @@ exports.profileUpdate = asyncHandler(async (req, res, next) => {
     const updatedUser = await user.save();
     res.status(200).json({
       success: true,
-      message: `User updated successfully for id ${id}`,
+      message: `User updated successfully`,
       data: updatedUser,
     });
   } catch (err) {
@@ -265,5 +261,16 @@ exports.changePassword = asyncHandler(async (req, res, next) => {
     sendTokenResponse(user, 200, res);
   } catch (err) {
     next(err);
+  }
+});
+
+exports.userLogout = asyncHandler(async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];  // Extract the token from the header
+  try {
+    // Invalidate the token by removing it from active sessions or marking it as invalid
+    await invalidateToken(token);
+    res.status(200).json({ success: true, message: "Logged out successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error logging out", error: error.message });
   }
 });
