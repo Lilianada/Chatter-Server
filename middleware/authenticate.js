@@ -1,15 +1,15 @@
 const { getAuth } = require('firebase-admin/auth');
 const admin = require('firebase-admin');
-const { initializeApp } = require('firebase-admin/app');
 const serviceAccount = require("../chatter-app-f65ae-firebase-adminsdk-jtrqy-93d345b6aa.json");
 
 if (admin.apps.length === 0) {
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
     databaseURL: process.env.FIREBASE_DATABASE_URL,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET
 });
 }
-
+const bucket = admin.storage().bucket();
 const db = admin.firestore();
 
 const authenticate = async (req, res, next) => {
@@ -29,4 +29,4 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-module.exports = {authenticate, admin, db};
+module.exports = {authenticate, admin, db, bucket};

@@ -2,10 +2,14 @@ const asyncHandler = require("express-async-handler");
 const ErrorResponse = require("../utils/errorResponse.js");
 const User = require("../models/userModels.js");
 const TokenService = require("../services/tokenService");
-const { signInWithEmailAndPassword, setPersistence, browserSessionPersistence } = require("firebase/auth");
+const {
+  signInWithEmailAndPassword,
+  setPersistence,
+  browserSessionPersistence,
+} = require("firebase/auth");
 const admin = require("firebase-admin");
-const { db } = require("../middleware/authenticate");
-const bcrypt = require('bcrypt');
+const { db, bucket } = require("../middleware/authenticate");
+const bcrypt = require("bcrypt");
 
 exports.userSignup = asyncHandler(async (req, res) => {
   const { email, password, fullName } = req.body;
@@ -17,14 +21,14 @@ exports.userSignup = asyncHandler(async (req, res) => {
       console.log("User already exists");
       return res.status(400).json({
         success: false,
-        message: "A user with this email already exists"
+        message: "A user with this email already exists",
       });
     }
 
     const userCredential = await admin.auth().createUser({
       email,
       password,
-      displayName: fullName
+      displayName: fullName,
     });
     console.log("New user ID:", userCredential.uid);
 
@@ -38,15 +42,19 @@ exports.userSignup = asyncHandler(async (req, res) => {
       userId: userCredential.uid,
     });
     await newUser.save();
-    console.log("User registered and saved to MongoDB and Setting document in Firebase Firestore");
+    console.log(
+      "User registered and saved to MongoDB and Setting document in Firebase Firestore"
+    );
     const result = await db.collection("users").doc(userCredential.uid).set({
-      fullName, email, userId: userCredential.uid
+      fullName,
+      email,
+      userId: userCredential.uid,
     });
     console.log("Result of setting document:", result);
-    await db.collection('mail').add({
+    await db.collection("mail").add({
       to: email,
       message: `Dear gentle reader, welcome to Chatter! We are excited to have you on board. Enjoy your stay!`,
-      subject: `Welcome to Chatter,  ${fullName}!`
+      subject: `Welcome to Chatter,  ${fullName}!`,
     });
     res.status(201).send({
       message: "User registered successfully",
@@ -70,11 +78,10 @@ exports.userLogin = asyncHandler(async (req, res) => {
     // Verify password (assuming you store a hash in your MongoDB and use bcrypt to compare)
     const user = await User.findOne({ userId: uid });
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found." });
     }
-
-    // Create a custom token for session management
-    // const customToken = await admin.auth().createCustomToken(uid);
 
     // Return the successful login response with the token
     res.status(200).json({
@@ -86,17 +93,17 @@ exports.userLogin = asyncHandler(async (req, res) => {
         fullName: user.fullName,
         categories: user.categories,
         profilePic: user.profilePic,
-        username: user.username
+        username: user.username,
       },
       // token: customToken,
     });
-
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ success: false, message: "Login failed.", error: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: "Login failed.", error: error.message });
   }
 });
-
 
 exports.getAllUsers = asyncHandler(async (req, res, next) => {
   try {
@@ -117,16 +124,16 @@ exports.getAllUsers = asyncHandler(async (req, res, next) => {
 });
 
 exports.getSingleUser = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { userId } = req.params;
   try {
-    const user = await Users.findById(id);
+    const user = await User.findOne(userId);
     if (!user) {
-      return res.status(404).json({ message: `User not found for id ${id}` });
+      return res.status(404).json({ message: `User not found` });
     }
 
     res.status(200).json({
       success: true,
-      message: `User found for id ${id}`,
+      message: `User found`,
       data: user,
     });
   } catch (err) {
@@ -155,7 +162,17 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.profileUpdate = asyncHandler(async (req, res, next) => {
-  const { userId } = req.params;
+  const userId = req.query.userId; // Correctly extracting userId from query
+
+  console.log("Received userId:", userId);
+  console.log("Received body:", req.body);
+
+  const user = await User.findOne({ userId: userId });
+  if (!user) {
+    return res.status(404).json({ message: `User not found for userId ${userId}` });
+  }
+  console.log(user)
+  
   const {
     fullName,
     userName,
@@ -163,35 +180,35 @@ exports.profileUpdate = asyncHandler(async (req, res, next) => {
     description,
     profilePic,
     pronouns,
-    categories
+    categories,
   } = req.body;
 
   try {
-    const user = await User.findOneAndUpdate(userId);
-    if (!user) {
-      return res.status(404).json({ message: `User not found for id ${id}` });
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,  // Use the _id from the found user document
+      { $set: { fullName, userName, email, description, profilePic, pronouns, categories } },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res
+        .status(404)
+        .json({ message: `User not found for id ${userId}` });
     }
 
-    // Update user fields if provided
-    user.fullName = fullName || user.fullName;
-    user.userName = userName || user.userName;
-    user.email = email || user.email;
-    user.profilePic = profilePic || user.profilePic;
-    user.description = description || user.description;
-    user.pronouns = pronouns || user.pronouns;
-    user.categories = categories || user.categories;
+    console.log("User updated successfully:", updatedUser);
 
-    const updatedUser = await user.save();
     res.status(200).json({
       success: true,
-      message: `User updated successfully`,
+      message: "User updated successfully",
       data: updatedUser,
     });
   } catch (err) {
     console.error("Error in updating user:", err);
-    next(new ErrorResponse("Error in updating user", 500));
+    res.status(500).json({ message: "Error in updating user", error: err });
   }
 });
+
 
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   const { email } = req.body;
@@ -265,12 +282,67 @@ exports.changePassword = asyncHandler(async (req, res, next) => {
 });
 
 exports.userLogout = asyncHandler(async (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];  // Extract the token from the header
+  const token = req.headers.authorization.split(" ")[1]; // Extract the token from the header
   try {
     // Invalidate the token by removing it from active sessions or marking it as invalid
     await invalidateToken(token);
     res.status(200).json({ success: true, message: "Logged out successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error logging out", error: error.message });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Error logging out",
+        error: error.message,
+      });
   }
+});
+
+exports.uploadImage = asyncHandler(async (req, res, next) => {
+  console.log(req.body);
+  if (!req.body) {
+    return res
+      .status(400)
+      .send({ success: false, message: "No file uploaded" });
+  }
+
+  // Define the path where the file will be stored in Firebase Storage
+  const filePath = `profilePictures/${req.file.originalname}`;
+
+  // Create a file in Firebase Storage in the "profilePictures" folder
+  const blob = bucket.file(filePath);
+  const blobStream = blob.createWriteStream({
+    metadata: {
+      contentType: req.file.mimetype,
+    },
+  });
+
+  blobStream.on("error", (err) => next(err));
+
+  blobStream.on("finish", async () => {
+    // The public URL can be used to directly access the file via HTTP.
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
+
+    // Here you might want to update a user's profile or another database record with this URL
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.body.userId },
+        { profilePic: publicUrl },
+        { new: true }
+      );
+      res
+        .status(200)
+        .json({
+          success: true,
+          message: "File uploaded successfully",
+          url: publicUrl,
+          data: user,
+        });
+    } catch (err) {
+      console.error("Error updating user:", err);
+      res.status(500).json({ message: "Error updating user", error: err });
+    }
+  });
+
+  blobStream.end(req.file.buffer);
 });

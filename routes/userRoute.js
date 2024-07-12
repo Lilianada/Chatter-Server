@@ -1,14 +1,18 @@
-const { userLogin, userSignup, profileUpdate, userLogout, getSingleUser } = require("../controllers/userControllers");
+const { userLogin, userSignup, profileUpdate, userLogout, getSingleUser, uploadImage } = require("../controllers/userControllers");
 const express = require("express");
 const router = express.Router();
+const upload = require("../middleware/uploadConfig")
 
 router.post("/register", userSignup);
 
 router.post("/login", userLogin);
 
-router.patch("/updateProfile/:userId", profileUpdate)
+// router.patch("/updateProfile", upload.single("profilePic"), profileUpdate);
+router.patch("/updateProfile", profileUpdate);
 
-router.get("/getUser/:userId", getSingleUser)
+router.post("/uploadImage", uploadImage)
+
+router.get("/getUser", getSingleUser)
 
 router.post("/forgotPassword", (req, res) => {
   res.send("Forgot password route");
