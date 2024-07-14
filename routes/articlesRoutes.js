@@ -12,7 +12,7 @@ const {authenticate} = require("../middleware/authenticate");
 
 router.get("/", getAllArticles);
 router.get("/:id", getSingleArticle);
-router.post("/addArticle", authenticate, createArticle);
+router.post("/addArticle",  createArticle);
 router.post("/saveDraft", authenticate, saveDraft);
 router.put("/article/:id", authenticate, updateArticle);
 router.delete("/article/:id", authenticate, deleteArticle);

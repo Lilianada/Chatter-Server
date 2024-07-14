@@ -41,31 +41,47 @@ exports.getSingleArticle = asyncHandler(async (req, res, next) => {
   }
 });
 
-exports.createArticle = asyncHandler(async (req, res, next) => {
-  console.log('Request body:', req.body);
-  const { title, description, date, categories, author, content, image, favourite = false } = req.body;
+exports.getUserArticles = asyncHandler(async (req, res, next) => {g
+  const userId = req.params.userId;
 
   try {
-    if (!req.files || !req.files.image) {
-      return res.status(400).json({
-        success: false,
-        message: 'Upload image is required.'
-      });
+    const articles = await Articles.find({ userId: userId });
+
+    // Check if any articles were found
+    if (articles.length === 0) {
+      return res.status(404).json({ message: "No articles found for this user" });
     }
 
-    const uploadedPath = await uploadImage(req.files.image, next);
-    console.log('Upload path:', uploadedPath);
+    res.status(200).json({
+      success: true,
+      message: "Articles fetched successfully",
+      data: articles
+    });
+  } catch (err) {
+    console.error("Error in fetching articles:", err);
+    next(new ErrorResponse("Error in fetching articles", 500));
+  }
+});
+
+
+exports.createArticle = asyncHandler(async (req, res, next) => {
+  console.log('Request body:', req.body);
+  const { title, description, date, categories, author, content, coverImage, favourite = false } = req.body;
+
+  try {
 
     const article = new Articles({
       title,
       description,
       content,
-      image: uploadedPath.photoPath,  
+      coverImage,
       date,
       categories,
       author,
       favourite,
     });
+
+    console.log(article)
 
     const createdArticle = await article.save();
     res.status(201).json({

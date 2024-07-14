@@ -6,7 +6,7 @@ const articleSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add title of the article"],
     },
-    subtitle: {
+    description: {
       type: String,
       required: [true, "Please add subtitle of article"],
     },
@@ -14,25 +14,22 @@ const articleSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add the content of the article"],
     },
-    image: {
+    coverImage: {
       type: String,
     },
-    category: {
-      type: Array,
-      required: [true, "Please Add Category"],
-    },
+    categories: [{ type: String }],
     author: {
       name: String,
-      role: String,
+      email: String,
+      image: String,
       href: String,
-      imageUrl: String,
+      userId: String
     },
     date: {
         type: String,
     },
-    favourite: {
-      type: Boolean,
-    },
+    status: { type: String, default: 'published' },
+    favourite: { type: Boolean, default: false }
   },
   { timestamps: true }
 );
