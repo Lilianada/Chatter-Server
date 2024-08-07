@@ -28,7 +28,7 @@ const articleSchema = mongoose.Schema(
     date: {
         type: String,
     },
-    status: { type: String, default: 'published' },
+    status: { type: String, default: 'draft' },
     favourite: { type: Boolean, default: false }
   },
   { timestamps: true }
